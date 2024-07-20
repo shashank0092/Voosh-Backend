@@ -1,16 +1,17 @@
-import express from "express";
+import dotenv from "dotenv"
+import { httpServer } from ".";
+import connectDB from "./DB/conn";
 
-const application=express()
+dotenv.config({
+    path:"./.env"
+})
 
-const port=3000
-
-application.get("/",async(req,res)=>{
-    res.json({
-        msg:"THIS IS ME",
-        status:200
+const startServer=()=>{
+    httpServer.listen(process.env.PORT||8080,()=>{
+        console.info(`Server is running at: http://localhost:${process.env.PORT||8080}`)
     })
-})
+}
 
-application.listen(port,()=>{
-    console.log("Running Server at port 3000")
-})
+connectDB()
+.then(()=>{startServer()})
+.catch((err)=>console.log("MongoDb Connection Error->",err))
